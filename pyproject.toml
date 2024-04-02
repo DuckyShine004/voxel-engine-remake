@@ -1,0 +1,20 @@
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "no-member",
+  "import-error",
+  "no-name-in-module",
+  "useless-super-delegation",
+  "too-few-public-methods",
+]
+
+[tool.pylint.TYPECHECK]
+generated-members = "pygame.*"
+
+[tool.pyright]
+pythonVersion = '3.10'
+venvPath = ''
+venv = ''
