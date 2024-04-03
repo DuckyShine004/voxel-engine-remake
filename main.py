@@ -20,9 +20,7 @@ def main():
         sys.exit(0)
 
     glfw.make_context_current(window)
-
-    app = App(window)
-    app.run()
+    App(window).run()
 
 
 if __name__ == "__main__":
