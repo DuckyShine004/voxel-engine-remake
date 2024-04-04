@@ -3,6 +3,8 @@ import glfw
 
 from src.app.app import App
 
+from src.constants.camera_constants import SCREEN_WIDTH, SCREEN_HEIGHT
+
 
 def main():
     if not glfw.init():
@@ -13,7 +15,7 @@ def main():
     glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
 
-    window = glfw.create_window(1080, 720, "Voxel Engine", None, None)
+    window = glfw.create_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Voxel Engine", None, None)
 
     if not window:
         glfw.terminate()

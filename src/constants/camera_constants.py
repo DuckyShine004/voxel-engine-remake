@@ -1,0 +1,16 @@
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
+
+CAMERA_SPEED = 10.0
+CAMERA_FOV = 45.0
+CAMERA_NEAR_CLIP = 0.1
+CAMERA_FAR_CLIP = 100.0
+
+CAMERA_DIRECTIONS = {
+    "R": 1,
+    "L": -1,
+    "F": 1,
+    "B": -1,
+    "U": 1,
+    "D": -1,
+}

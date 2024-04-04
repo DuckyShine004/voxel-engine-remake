@@ -8,8 +8,8 @@ from src.world.world import World
 class App:
     def __init__(self, window):
         self.window = window
-        self.world = World()
 
+        self.world = World()
         self.shader_manager = ShaderManager()
 
     def initialize_application_parameters(self):
@@ -36,6 +36,7 @@ class App:
 
     def update(self):
         time = glfw.get_time()
+        self.world.update(self.shader_manager, time)
 
     def render(self):
         gl.glClearColor(0, 0, 0, 0)
@@ -49,3 +50,5 @@ class App:
 
     def on_resize(self, window, width, height):
         gl.glViewport(0, 0, width, height)
+
+        self.world.camera.set_aspect_ratio(width, height)
