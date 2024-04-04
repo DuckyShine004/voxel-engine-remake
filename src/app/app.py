@@ -3,6 +3,7 @@ import OpenGL.GL as gl
 
 from src.managers.shader_manager import ShaderManager
 from src.world.world import World
+from src.world.camera import Camera
 
 
 class App:
@@ -10,6 +11,7 @@ class App:
         self.window = window
 
         self.world = World()
+        self.camera = Camera()
         self.shader_manager = ShaderManager()
 
     def initialize_application_parameters(self):
@@ -36,7 +38,7 @@ class App:
 
     def update(self):
         time = glfw.get_time()
-        self.world.update(self.shader_manager, time)
+        self.camera.update(self.window, self.shader_manager, time)
 
     def render(self):
         gl.glClearColor(0, 0, 0, 0)
@@ -51,4 +53,4 @@ class App:
     def on_resize(self, window, width, height):
         gl.glViewport(0, 0, width, height)
 
-        self.world.camera.set_aspect_ratio(width, height)
+        self.camera.set_aspect_ratio(width, height)

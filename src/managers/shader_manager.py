@@ -1,4 +1,5 @@
 import os
+import glm
 
 import OpenGL.GL as gl
 
@@ -75,3 +76,11 @@ class ShaderManager:
 
     def use_program(self):
         gl.glUseProgram(self.program_id)
+
+    def set_vec3(self, name, value):
+        location = gl.glGetUniformLocation(self.program_id, name)
+        gl.glUniform3fv(location, 1, glm.value_ptr(value))
+
+    def set_mat4(self, name, value):
+        location = gl.glGetUniformLocation(self.program_id, name)
+        gl.glUniformMatrix4fv(location, 1, gl.GL_FALSE, glm.value_ptr(value))

@@ -1,13 +1,11 @@
 import numpy
 
 from src.world.chunk import Chunk
-from src.world.camera import Camera
 
 
 class World:
     def __init__(self):
         self.chunks = numpy.empty(3 * [1], dtype=object)
-        self.camera = Camera()
 
     def create_world(self):
         for x in range(1):
@@ -20,9 +18,6 @@ class World:
         chunk.create_chunk()
 
         self.chunks[x, y, z] = chunk
-
-    def update(self, shader_manager, time):
-        self.camera.update(shader_manager, time)
 
     def render(self):
         for x in range(1):

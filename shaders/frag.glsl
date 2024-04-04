@@ -1,5 +1,7 @@
 #version 330 core
 
+uniform vec3 mCameraPos;
+
 out vec4 FragColor;
 
 void main() {
