@@ -31,6 +31,7 @@ class Camera:
 
     def set_movement(self, window, time):
         self.set_speed(time)
+        print(self.position)
 
         if glfw.get_key(window, glfw.KEY_W) == glfw.PRESS:
             self.move("F")
@@ -43,6 +44,12 @@ class Camera:
 
         if glfw.get_key(window, glfw.KEY_D) == glfw.PRESS:
             self.move("R")
+
+        if glfw.get_key(window, glfw.KEY_SPACE) == glfw.PRESS:
+            self.move("U")
+
+        if glfw.get_key(window, glfw.KEY_LEFT_SHIFT) == glfw.PRESS:
+            self.move("D")
 
     def set_aspect_ratio(self, screen_width, screen_height):
         self.aspect_ratio = screen_width / screen_height
