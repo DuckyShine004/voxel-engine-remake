@@ -18,10 +18,10 @@ class App:
         glfw.set_framebuffer_size_callback(self.window, self.on_resize)
         glfw.set_key_callback(self.window, self.on_key_press)
 
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         self.shader_manager.use_program()
 
     def run(self):
-
         self.initialize_application_parameters()
 
         while not glfw.window_should_close(self.window):
@@ -41,7 +41,6 @@ class App:
         gl.glClearColor(0, 0, 0, 0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-        self.shader_manager.use_program()
         self.world.render()
 
     def on_key_press(self, window, key, scancode, action, mods):

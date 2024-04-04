@@ -65,8 +65,6 @@ class Chunk:
         gl.glVertexAttribDivisor(3, 1)
 
     def render(self):
-
-        print(self.vao)
         gl.glBindVertexArray(self.vao)
         gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_INT, None, len(self.block_positions))
         gl.glBindVertexArray(0)
