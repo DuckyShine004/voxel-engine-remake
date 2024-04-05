@@ -1,5 +1,8 @@
+from collections import defaultdict
+
 import numpy
 import OpenGL.GL as gl
+
 
 from src.constants.world_constants import CHUNK_SIZE, VERTICES, INDICES
 
@@ -13,8 +16,7 @@ class Chunk:
         self.y = y
         self.z = z
 
-        self.block_positions = []
-        self.block_textures = []
+        self.blocks = {}
 
     def create_chunk(self):
         for x in range(self.x, self.x + CHUNK_SIZE):
@@ -23,11 +25,13 @@ class Chunk:
                     self.add_block(x, y, z)
 
     def add_block(self, x, y, z, block_type=0):
-        self.block_positions.append((x, y, z))
-        self.block_textures.append(block_type)
+        key = (x, y, z)
+
+        if key not in self.blocks:
+            self.blocks[key] = block_type
 
     def get_block_positions(self):
-        return numpy.array(self.block_positions, dtype=numpy.float32)
+        return numpy.array(list(self.blocks.keys()), dtype=numpy.float32)
 
     def set_buffers(self):
         block_positions = self.get_block_positions()
@@ -61,5 +65,5 @@ class Chunk:
 
     def render(self):
         gl.glBindVertexArray(self.vao)
-        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_INT, None, len(self.block_positions))
+        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_INT, None, len(self.blocks.keys()))
         gl.glBindVertexArray(0)
