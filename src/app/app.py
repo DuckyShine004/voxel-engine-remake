@@ -1,5 +1,6 @@
 import glfw
 import OpenGL.GL as gl
+import noise
 
 from src.managers.music_manager import MusicManager
 from src.managers.shader_manager import ShaderManager
