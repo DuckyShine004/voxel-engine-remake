@@ -1,8 +1,7 @@
-from collections import defaultdict
-
 import numpy
 import OpenGL.GL as gl
 
+import src.utilities.noise as noise
 
 from src.constants.world_constants import CHUNK_SIZE, VERTICES, INDICES
 
@@ -20,9 +19,11 @@ class Chunk:
 
     def create_chunk(self):
         for x in range(self.x, self.x + CHUNK_SIZE):
-            for y in range(self.y, self.y + CHUNK_SIZE):
-                for z in range(self.z, self.z + CHUNK_SIZE):
-                    self.add_block(x, y, z)
+            for z in range(self.z, self.z + CHUNK_SIZE):
+                y = noise.simplex_noise_2d(x, z)
+                # print(y)
+
+                self.add_block(x, y, z)
 
     def add_block(self, x, y, z, block_type=0):
         key = (x, y, z)
