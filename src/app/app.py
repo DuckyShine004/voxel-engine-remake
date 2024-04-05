@@ -47,7 +47,7 @@ class App:
         time = glfw.get_time()
 
         self.camera.update(self.window, self.shader_manager, time)
-        # self.music_manager.update()
+        self.music_manager.update()
 
     def render(self):
         gl.glClearColor(0, 0, 0, 0)
