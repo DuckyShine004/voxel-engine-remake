@@ -25,9 +25,12 @@ class App:
         glfw.set_framebuffer_size_callback(self.window, self.on_resize)
         glfw.set_key_callback(self.window, self.on_key_press)
         glfw.set_cursor_pos_callback(self.window, self.on_mouse)
+        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
-        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        gl.glEnable(gl.GL_CULL_FACE)
+
         self.shader_manager.use_program()
 
     def run(self):

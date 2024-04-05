@@ -1,7 +1,9 @@
 import numpy
 import OpenGL.GL as gl
 
-from src.constants.world_constants import VERTICES, INDICES
+import src.utilities.noise as noise
+
+from src.constants.world_constants import CHUNK_SIZE, VERTICES, INDICES
 
 
 class Chunk:
@@ -13,30 +15,28 @@ class Chunk:
         self.y = y
         self.z = z
 
-        self.blocks = numpy.zeros(3 * [1], dtype=numpy.uint8)
-        self.block_positions = self.get_block_positions()
-        self.set_buffers(self.block_positions)
+        self.blocks = {}
 
     def create_chunk(self):
-        for x in range(1):
-            for y in range(1):
-                for z in range(1):
-                    self.add_block(x, y, z)
+        for x in range(self.x, self.x + CHUNK_SIZE):
+            for z in range(self.z, self.z + CHUNK_SIZE):
+                y = noise.simplex_noise_2d(x, z)
+                # print(y)
+
+                self.add_block(x, y, z)
 
     def add_block(self, x, y, z, block_type=0):
-        self.blocks[x, y, z] = block_type
+        key = (x, y, z)
+
+        if key not in self.blocks:
+            self.blocks[key] = block_type
 
     def get_block_positions(self):
-        block_positions = []
+        return numpy.array(list(self.blocks.keys()), dtype=numpy.float32)
 
-        for x in range(1):
-            for y in range(1):
-                for z in range(1):
-                    block_positions.append((x, y, z))
+    def set_buffers(self):
+        block_positions = self.get_block_positions()
 
-        return numpy.array(block_positions, dtype=numpy.float32)
-
-    def set_buffers(self, block_positions):
         vertices = numpy.array(VERTICES, dtype=numpy.float32)
         indices = numpy.array(INDICES, dtype=numpy.uint32)
 
@@ -66,5 +66,5 @@ class Chunk:
 
     def render(self):
         gl.glBindVertexArray(self.vao)
-        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_INT, None, len(self.block_positions))
+        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_INT, None, len(self.blocks.keys()))
         gl.glBindVertexArray(0)
