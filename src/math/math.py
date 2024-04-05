@@ -1,8 +1,10 @@
-import pyrr
-import numpy
-
-
 class Math:
     @staticmethod
-    def Vector3(x, y, z):
-        return pyrr.Vector3([x, y, z], dtype=numpy.float32)
+    def clamp(value, lower, upper):
+        if value < lower:
+            return lower
+
+        if value > upper:
+            return upper
+
+        return value

@@ -1,12 +1,20 @@
+import math
 import glm
 import glfw
 
+from src.math.math import Math
+
 from src.constants.camera_constants import (
+    CAMERA_PITCH,
+    CAMERA_PITCH_LIMIT,
     CAMERA_SPEED,
     CAMERA_FOV,
     CAMERA_NEAR_CLIP,
     CAMERA_FAR_CLIP,
     CAMERA_DIRECTIONS,
+    CAMERA_YAW,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
 )
 
 
@@ -20,9 +28,14 @@ class Camera:
         self.front = glm.vec3(0.0, 0.0, -1.0)
         self.up = glm.vec3(0.0, 1.0, 0.0)
 
+        self.yaw = CAMERA_YAW
+        self.pitch = CAMERA_PITCH
+
         self.previous_time = 0
         self.speed = 0
         self.aspect_ratio = 0
+
+        self.previous_mouse_position = glm.vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     def set_speed(self, time):
         delta_time = time - self.previous_time
@@ -86,3 +99,18 @@ class Camera:
 
         if move_id in {"U", "D"}:
             self.position += camera_velocity * self.up
+
+    def rotate(self, offset_mouse_x, offset_mouse_y):
+        self.yaw += offset_mouse_x
+        self.pitch = Math.clamp(self.pitch + offset_mouse_y, -CAMERA_PITCH_LIMIT, CAMERA_PITCH_LIMIT)
+
+        camera_direction = glm.vec3(0.0)
+
+        theta = glm.radians(self.yaw)
+        omega = glm.radians(self.pitch)
+
+        camera_direction.x = math.cos(theta) * math.cos(omega)
+        camera_direction.y = math.sin(omega)
+        camera_direction.z = math.sin(theta) * math.cos(omega)
+
+        self.front = glm.normalize(camera_direction)
