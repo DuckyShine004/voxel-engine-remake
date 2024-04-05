@@ -44,7 +44,6 @@ class Camera:
 
     def set_movement(self, window, time):
         self.set_speed(time)
-        print(self.position)
 
         if glfw.get_key(window, glfw.KEY_W) == glfw.PRESS:
             self.move("F")

@@ -4,6 +4,7 @@ import glm
 import OpenGL.GL as gl
 
 from src.utilities.utility import Utility
+from src.constants.file_constants import PATHS
 
 
 class ShaderManager:
@@ -38,7 +39,7 @@ class ShaderManager:
             raise RuntimeError(f"Program Linking Failed:\n{error_log}")
 
     def set_shaders(self):
-        shader_path = Utility.get_shader_path()
+        shader_path = Utility.get_directory_path(PATHS["shaders"])
 
         self.vert_shader = gl.glCreateShader(gl.GL_VERTEX_SHADER)
         self.frag_shader = gl.glCreateShader(gl.GL_FRAGMENT_SHADER)
