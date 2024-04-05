@@ -1,5 +1,6 @@
 import sys
 import glfw
+import pygame
 
 from src.app.app import App
 
@@ -9,6 +10,8 @@ from src.constants.camera_constants import SCREEN_WIDTH, SCREEN_HEIGHT
 def main():
     if not glfw.init():
         sys.exit(0)
+
+    pygame.init()
 
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)

@@ -1,6 +1,7 @@
 import glfw
 import OpenGL.GL as gl
 
+from src.managers.music_manager import MusicManager
 from src.managers.shader_manager import ShaderManager
 from src.world.world import World
 from src.world.camera import Camera
@@ -14,6 +15,8 @@ class App:
 
         self.world = World()
         self.camera = Camera()
+
+        self.music_manager = MusicManager()
         self.shader_manager = ShaderManager()
 
     def initialize_application_parameters(self):
@@ -42,7 +45,9 @@ class App:
 
     def update(self):
         time = glfw.get_time()
+
         self.camera.update(self.window, self.shader_manager, time)
+        self.music_manager.update()
 
     def render(self):
         gl.glClearColor(0, 0, 0, 0)

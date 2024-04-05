@@ -2,6 +2,8 @@ import os
 
 from pathlib import Path
 
+from src.constants.file_constants import PATHS
+
 
 class Utility:
     @staticmethod
@@ -9,5 +11,5 @@ class Utility:
         return Path(__file__).parent.parent.parent
 
     @staticmethod
-    def get_shader_path():
-        return os.path.join(Utility.get_root_path(), "shaders")
+    def get_directory_path(paths):
+        return os.path.join(Utility.get_root_path(), *paths)
