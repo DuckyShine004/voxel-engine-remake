@@ -12,7 +12,6 @@ from src.constants.world_constants import TEXTURE_WIDTH, TEXTURE_HEIGHT, BLOCK_T
 
 class TextureManager:
     def __init__(self):
-
         self.initialize_texture_parameters()
         self.create_texture_atlases()
 
@@ -37,7 +36,7 @@ class TextureManager:
         )
 
     def create_texture_atlas(self, block_path, block_index):
-        block_files = os.listdir(block_path)
+        block_files = sorted(os.listdir(block_path))
         block_atlas = None
 
         for block_file in block_files:

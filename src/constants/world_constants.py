@@ -30,6 +30,13 @@ INDICES = [
     [7, 2, 3],
 ]
 
+UVS = [
+    [1.0, 1.0],
+    [1.0, 0.0],
+    [0.0, 0.0],
+    [0.0, 1.0],
+]
+
 NOISE_FACTOR = 10.0
 NOISE_AMPLITUDE = 25.0
 NOISE_OCTAVES = 4

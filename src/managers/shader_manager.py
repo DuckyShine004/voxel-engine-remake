@@ -78,6 +78,10 @@ class ShaderManager:
     def use_program(self):
         gl.glUseProgram(self.program_id)
 
+    def set_int1(self, name, value):
+        location = gl.glGetUniformLocation(self.program_id, name)
+        gl.glUniform1i(location, value)
+
     def set_vec3(self, name, value):
         location = gl.glGetUniformLocation(self.program_id, name)
         gl.glUniform3fv(location, 1, glm.value_ptr(value))

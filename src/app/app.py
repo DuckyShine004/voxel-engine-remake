@@ -19,7 +19,6 @@ class App:
 
         self.music_manager = MusicManager()
         self.shader_manager = ShaderManager()
-        self.texture_manager = TextureManager()
 
     def initialize_application_parameters(self):
         self.world.create_world()
@@ -29,11 +28,12 @@ class App:
         glfw.set_cursor_pos_callback(self.window, self.on_mouse)
         glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        # gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         gl.glEnable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_CULL_FACE)
 
         self.shader_manager.use_program()
+        self.shader_manager.set_int1("mTextureArr", 0)
 
     def run(self):
         self.initialize_application_parameters()
