@@ -6,4 +6,8 @@ PATHS = {
         "data",
         "music",
     ],
+    "textures": [
+        "data",
+        "textures",
+    ],
 }

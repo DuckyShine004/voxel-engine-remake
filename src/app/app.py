@@ -1,6 +1,7 @@
 import glfw
 import OpenGL.GL as gl
 
+from src.managers.texture_manager import TextureManager
 from src.managers.music_manager import MusicManager
 from src.managers.shader_manager import ShaderManager
 from src.world.world import World
@@ -18,6 +19,7 @@ class App:
 
         self.music_manager = MusicManager()
         self.shader_manager = ShaderManager()
+        self.texture_manager = TextureManager()
 
     def initialize_application_parameters(self):
         self.world.create_world()
