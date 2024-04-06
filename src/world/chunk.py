@@ -28,7 +28,7 @@ class Chunk:
 
                 self.add_block(x, y, z)
 
-    def add_block(self, x, y, z, block_type=1):
+    def add_block(self, x, y, z, block_type=2):
         position = (x, y, z)
 
         if position not in self.blocks:

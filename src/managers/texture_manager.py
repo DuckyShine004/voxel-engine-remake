@@ -49,6 +49,9 @@ class TextureManager:
 
             block_atlas = numpy.concatenate([block_atlas, block_image_data], axis=0)
 
+        # image = Image.fromarray(block_atlas)
+        # image.show()
+
         self.add_texture_atlas(block_atlas, block_index)
 
     def add_texture_atlas(self, texture_atlas, texture_atlas_index):
