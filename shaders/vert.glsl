@@ -9,12 +9,14 @@ uniform mat4 mProjectionView;
 
 out vec2 fObjectTexCoords;
 out float fObjectTexIndex;
+out vec3 fObjectPos;
 
 void main() {
-    vec3 mLocalPos = mGlobalPos + mObjectPos;
+    vec3 localPos = mGlobalPos + mObjectPos;
 
-    gl_Position = mProjectionView * vec4(mLocalPos, 1.0);
+    gl_Position = mProjectionView * vec4(localPos, 1.0);
 
     fObjectTexCoords = mObjectTexCoords;
     fObjectTexIndex = mObjectTexIndex;
+    fObjectPos = mObjectPos;
 }

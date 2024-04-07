@@ -7,7 +7,7 @@ from src.world.world import World
 from src.world.camera import Camera
 
 from src.constants.camera_constants import CAMERA_SENSITIVITY
-from src.constants.world_constants import BACKGROUND_COLOR
+from src.constants.world_constants import BACKGROUND_COLOR, FOG_END, FOG_START
 
 
 class App:
@@ -35,6 +35,9 @@ class App:
         self.shader_manager.use_program()
 
         self.shader_manager.set_int1("mTextureArr", 0)
+        self.shader_manager.set_float4("mFogColor", *BACKGROUND_COLOR)
+        self.shader_manager.set_float1("mFogStart", FOG_START)
+        self.shader_manager.set_float1("mFogEnd", FOG_END)
 
     def run(self):
         self.initialize_application_parameters()
