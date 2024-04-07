@@ -1,7 +1,6 @@
 import glfw
 import OpenGL.GL as gl
 
-from src.managers.texture_manager import TextureManager
 from src.managers.music_manager import MusicManager
 from src.managers.shader_manager import ShaderManager
 from src.world.world import World
@@ -33,6 +32,7 @@ class App:
         gl.glEnable(gl.GL_CULL_FACE)
 
         self.shader_manager.use_program()
+
         self.shader_manager.set_int1("mTextureArr", 0)
 
     def run(self):
