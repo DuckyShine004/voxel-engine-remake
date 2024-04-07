@@ -1,5 +1,4 @@
-from re import A
-
+BACKGROUND_COLOR = (0.5, 0.7, 1.0, 1.0)
 
 CHUNK_SIZE = 32
 WORLD_WIDTH = 4
@@ -92,6 +91,7 @@ TEXTURE_HEIGHT = 48
 
 TREE_CHANCE = 0.005
 TREE_HEIGHT_RANGE = (5, 6)
+DIRT_HEIGHT_RANGE = (3, 4)
 
 BLOCK_TYPES = {
     "air": 0,

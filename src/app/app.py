@@ -7,6 +7,7 @@ from src.world.world import World
 from src.world.camera import Camera
 
 from src.constants.camera_constants import CAMERA_SENSITIVITY
+from src.constants.world_constants import BACKGROUND_COLOR
 
 
 class App:
@@ -55,7 +56,7 @@ class App:
         self.music_manager.update()
 
     def render(self):
-        gl.glClearColor(0, 0, 0, 0)
+        gl.glClearColor(*BACKGROUND_COLOR)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
         self.world.render()

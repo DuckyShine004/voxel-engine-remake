@@ -15,6 +15,7 @@ from src.constants.world_constants import (
     INDICES,
     TREE_CHANCE,
     TREE_HEIGHT_RANGE,
+    DIRT_HEIGHT_RANGE,
 )
 
 
@@ -36,6 +37,7 @@ class Chunk:
 
                 self.add_block(x, y, z)
                 self.add_tree(x, y, z)
+                self.add_cave(x, y, z)
 
     def add_tree(self, x, y, z):
         # if not check_tree_position_valid():
@@ -64,7 +66,11 @@ class Chunk:
             for dx, dz in ((-1, 0), (1, 0), (0, 0), (0, 1), (0, -1)):
                 self.add_block(x + dx, y + dy, z + dz, "oak_leaves")
 
-            # self.add_block(x - 1, y + dy, z, "oak_leaves")
+    def add_cave(self, x, y, z):
+        dirt_height = random.randint(*DIRT_HEIGHT_RANGE)
+
+        for dy in range(1, dirt_height + 1):
+            self.add_block(x, y - dy, z, "dirt")
 
     def add_block(self, x, y, z, block_type="grass"):
         position = (x, y, z)
