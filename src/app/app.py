@@ -1,7 +1,6 @@
 import glfw
 import OpenGL.GL as gl
 
-from src.managers.texture_manager import TextureManager
 from src.managers.music_manager import MusicManager
 from src.managers.shader_manager import ShaderManager
 from src.world.world import World
