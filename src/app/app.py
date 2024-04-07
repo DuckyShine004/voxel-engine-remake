@@ -33,6 +33,7 @@ class App:
         gl.glEnable(gl.GL_CULL_FACE)
 
         self.shader_manager.use_program()
+
         self.shader_manager.set_int1("mTextureArr", 0)
 
     def run(self):
