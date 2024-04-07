@@ -10,12 +10,19 @@ from src.constants.file_constants import PATHS
 from src.constants.world_constants import TEXTURE_WIDTH, TEXTURE_HEIGHT, BLOCK_TYPES
 
 
-class TextureManager:
-    def __init__(self):
-        self.initialize_texture_parameters()
-        self.create_texture_atlases()
+class Texture:
+    @staticmethod
+    def use_textures():
+        texture_object = gl.glGenTextures(1)
 
-    def initialize_texture_parameters(self):
+        Texture.initialize_texture_parameters(texture_object)
+        Texture.create_texture_atlases()
+
+    @staticmethod
+    def initialize_texture_parameters(texture_object):
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, texture_object)
+
         gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
         gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         gl.glTexParameteri(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_WRAP_R, gl.GL_CLAMP_TO_EDGE)
@@ -35,7 +42,8 @@ class TextureManager:
             None,
         )
 
-    def create_texture_atlas(self, block_path, block_index):
+    @staticmethod
+    def create_texture_atlas(block_path, block_index):
         block_files = sorted(os.listdir(block_path))
         block_atlas = None
 
@@ -49,12 +57,10 @@ class TextureManager:
 
             block_atlas = numpy.concatenate([block_atlas, block_image_data], axis=0)
 
-        # image = Image.fromarray(block_atlas)
-        # image.show()
+        Texture.add_texture_atlas(block_atlas, block_index)
 
-        self.add_texture_atlas(block_atlas, block_index)
-
-    def add_texture_atlas(self, texture_atlas, texture_atlas_index):
+    @staticmethod
+    def add_texture_atlas(texture_atlas, texture_atlas_index):
         gl.glTexSubImage3D(
             gl.GL_TEXTURE_2D_ARRAY,
             0,
@@ -69,13 +75,15 @@ class TextureManager:
             texture_atlas,
         )
 
-    def create_texture_atlases(self):
-        block_data = self.get_block_data()
+    @staticmethod
+    def create_texture_atlases():
+        block_data = Texture.get_block_data()
 
         for block_path, block_index in block_data:
-            self.create_texture_atlas(block_path, block_index)
+            Texture.create_texture_atlas(block_path, block_index)
 
-    def get_block_data(self):
+    @staticmethod
+    def get_block_data():
         texture_path = Utility.get_directory_path(PATHS["textures"])
         block_data = []
 
