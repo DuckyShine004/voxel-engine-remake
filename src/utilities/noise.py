@@ -87,3 +87,12 @@ def simplex_noise_2d(x: float, y: float) -> float:
         frequency_sum += frequency
 
     return int(pow(noise / frequency_sum, NOISE_EXPONENT) * NOISE_AMPLITUDE)
+
+
+@njit
+def simplex_noise_3d(x, y, z):
+    x = NOISE_FACTOR * x / (WORLD_WIDTH * CHUNK_SIZE)
+    y = NOISE_FACTOR * y / (WORLD_WIDTH * CHUNK_SIZE)
+    z = NOISE_FACTOR * z / (WORLD_WIDTH * CHUNK_SIZE)
+
+    return get_noise_3d(x, y, z)

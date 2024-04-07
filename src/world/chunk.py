@@ -72,6 +72,10 @@ class Chunk:
         for dy in range(1, dirt_height + 1):
             self.add_block(x, y - dy, z, "dirt")
 
+        for dy in range(dirt_height, dirt_height + 10):
+            if noise.simplex_noise_3d(x, y - dy, z) >= 0.0:
+                self.add_block(x, y - dy, z, "stone")
+
     def add_block(self, x, y, z, block_type="grass"):
         position = (x, y, z)
 
