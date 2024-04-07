@@ -82,6 +82,14 @@ class ShaderManager:
         location = gl.glGetUniformLocation(self.program_id, name)
         gl.glUniform1i(location, value)
 
+    def set_float1(self, name, value):
+        location = gl.glGetUniformLocation(self.program_id, name)
+        gl.glUniform1f(location, value)
+
+    def set_float4(self, name, w, x, y, z):
+        location = gl.glGetUniformLocation(self.program_id, name)
+        gl.glUniform4f(location, w, x, y, z)
+
     def set_vec3(self, name, value):
         location = gl.glGetUniformLocation(self.program_id, name)
         gl.glUniform3fv(location, 1, glm.value_ptr(value))
