@@ -7,24 +7,24 @@ from src.constants.world_constants import CHUNK_SIZE, WORLD_WIDTH, WORLD_HEIGHT,
 
 class World:
     def __init__(self):
-        self.chunks = numpy.empty((WORLD_WIDTH, WORLD_HEIGHT, WORLD_DEPTH), dtype=object)
+        self.chunks = {}
 
     def create_world(self):
         for x in range(WORLD_WIDTH):
-            for y in range(WORLD_HEIGHT):
-                for z in range(WORLD_DEPTH):
-                    self.add_chunk(x, y, z)
+            # for y in range(WORLD_HEIGHT):
+            for z in range(WORLD_DEPTH):
+                self.add_chunk(x, 0, z)
 
     def add_chunk(self, x, y, z):
-        chunk = Chunk(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE)
+        chunk = Chunk(self, x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE)
+        position = (x, y, z)
 
         chunk.create_chunk()
         chunk.set_buffers()
 
-        self.chunks[x, y, z] = chunk
+        if position not in self.chunks:
+            self.chunks[position] = chunk
 
     def render(self):
-        for x in range(WORLD_WIDTH):
-            for y in range(WORLD_HEIGHT):
-                for z in range(WORLD_DEPTH):
-                    self.chunks[x, y, z].render()
+        for chunk in self.chunks.values():
+            chunk.render()

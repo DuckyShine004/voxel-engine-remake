@@ -1,3 +1,5 @@
+BACKGROUND_COLOR = (0.5, 0.7, 1.0, 1.0)
+
 CHUNK_SIZE = 32
 WORLD_WIDTH = 4
 WORLD_HEIGHT = 4
@@ -87,9 +89,15 @@ NOISE_EXPONENT = 0.9
 TEXTURE_WIDTH = 16
 TEXTURE_HEIGHT = 48
 
+TREE_CHANCE = 0.005
+TREE_HEIGHT_RANGE = (5, 6)
+DIRT_HEIGHT_RANGE = (3, 4)
+
 BLOCK_TYPES = {
     "air": 0,
     "stone": 1,
     "grass": 2,
     "dirt": 3,
+    "oak_log": 4,
+    "oak_leaves": 5,
 }
