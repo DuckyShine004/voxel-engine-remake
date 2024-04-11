@@ -114,5 +114,5 @@ class Chunk:
 
     def render(self):
         gl.glBindVertexArray(self.vertex_array_object)
-        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, None, len(self.blocks.keys()))
+        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, None, len(self.blocks))
         gl.glBindVertexArray(0)
