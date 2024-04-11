@@ -34,16 +34,19 @@ class Camera:
         self.previous_time = 0
         self.speed = 0
         self.aspect_ratio = 0
+        self.velocity = glm.vec3(0.0)
 
         self.previous_mouse_position = glm.vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     def set_speed(self, time):
         delta_time = time - self.previous_time
         self.previous_time = time
-        self.speed = CAMERA_SPEED * delta_time
+
+        if glm.length(self.velocity) != 0.0:
+            self.position += glm.normalize(self.velocity) * CAMERA_SPEED * delta_time
+            self.velocity = glm.vec3(0.0)
 
     def set_movement(self, window, time):
-        self.set_speed(time)
 
         if glfw.get_key(window, glfw.KEY_W) == glfw.PRESS:
             self.move("F")
@@ -62,6 +65,8 @@ class Camera:
 
         if glfw.get_key(window, glfw.KEY_LEFT_SHIFT) == glfw.PRESS:
             self.move("D")
+
+        self.set_speed(time)
 
     def set_aspect_ratio(self, screen_width, screen_height):
         self.aspect_ratio = screen_width / screen_height
@@ -88,16 +93,15 @@ class Camera:
 
     def move(self, move_id):
         direction = CAMERA_DIRECTIONS[move_id]
-        camera_velocity = direction * self.speed
 
         if move_id in {"L", "R"}:
-            self.position += camera_velocity * glm.normalize(glm.cross(self.front, self.up))
+            self.velocity += direction * glm.normalize(glm.cross(self.front, self.up))
 
         if move_id in {"F", "B"}:
-            self.position += camera_velocity * self.front
+            self.velocity += direction * self.front
 
         if move_id in {"U", "D"}:
-            self.position += camera_velocity * self.up
+            self.velocity += direction * self.up
 
     def rotate(self, offset_mouse_x, offset_mouse_y):
         self.yaw += offset_mouse_x
