@@ -19,7 +19,6 @@ float getFog() {
 }
 
 void main() {
-    //FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     vec4 texColor = texture(mTextureArr, vec3(fObjectTexCoords, fObjectTexIndex));
     vec3 finalColor = mix(mFogColor.rgb, texColor.rgb, getFog());
 

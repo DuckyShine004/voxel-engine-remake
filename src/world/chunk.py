@@ -29,6 +29,10 @@ class Chunk:
         self.z = z
 
         self.blocks = {}
+        self.block_data = {
+            "opaque": set(),
+            "transparent": set(),
+        }
 
     def create_chunk(self):
         for x in range(self.x, self.x + CHUNK_SIZE):
@@ -59,8 +63,8 @@ class Chunk:
                     if dx == dz == 0:
                         continue
 
-                    self.add_block(x + dx, y + dy, z + dz, "oak_leaves")
-                    self.add_block(x + dz, y + dy, z + dx, "oak_leaves")
+                    self.add_block(x + dx, y + dy, z + dz, "oak_leaves", "transparent")
+                    self.add_block(x + dz, y + dy, z + dx, "oak_leaves", "transparent")
 
         for dy in range(3, 5):
             for dx, dz in ((-1, 0), (1, 0), (0, 0), (0, 1), (0, -1)):
@@ -76,11 +80,13 @@ class Chunk:
             if noise.simplex_noise_3d(x, y - dy, z) >= 0.0:
                 self.add_block(x, y - dy, z, "stone")
 
-    def add_block(self, x, y, z, block_type="grass"):
+    def add_block(self, x, y, z, block_type="grass", alpha_id="opaque"):
         position = (x, y, z)
 
         if not self.check_block_position_occupied(position):
             self.blocks[position] = BLOCK_TYPES[block_type]
+
+        self.block_data[alpha_id].add(position)
 
     def check_block_position_occupied(self, position):
         for chunk in self.world.chunks.values():
