@@ -3,8 +3,7 @@ import OpenGL.GL as gl
 
 class Buffer:
     @staticmethod
-    def use_buffer(data, target, location=None, instancing=False):
-        buffer = gl.glGenBuffers(1)
+    def use_buffer(buffer, data, target, location=None, instancing=False):
         buffer_offset = data.shape[1] if len(data.shape) > 1 else 1
 
         Buffer.bind_buffer_data(buffer, target, data)

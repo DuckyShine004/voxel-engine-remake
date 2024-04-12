@@ -5,6 +5,7 @@ import OpenGL.GL as gl
 
 from src.buffer.buffer import Buffer
 from src.buffer.texture import Texture
+from src.math.math import Math
 
 import src.utilities.noise as noise
 
@@ -24,12 +25,24 @@ class Chunk:
     def __init__(self, world, x, y, z):
         self.opaque_vao = gl.glGenVertexArrays(1)
         self.transparent_vao = gl.glGenVertexArrays(1)
+        self.vertex_buffer = gl.glGenBuffers(1)
+        self.index_buffer = gl.glGenBuffers(1)
+        self.element_buffer = gl.glGenBuffers(1)
+        self.uv_buffer = gl.glGenBuffers(1)
+        self.opaque_texture_buffer = gl.glGenBuffers(1)
+        self.transparent_texture_buffer = gl.glGenBuffers(1)
+        self.opaque_instance_buffer = gl.glGenBuffers(1)
+        self.transparent_instance_buffer = gl.glGenBuffers(1)
 
         self.world = world
 
         self.x = x
         self.y = y
         self.z = z
+
+        self.vertices = []
+        self.indices = []
+        self.uvs = []
 
         self.blocks = {}
         self.block_data = {
@@ -109,42 +122,35 @@ class Chunk:
     def set_buffers(self):
         gl.glBindVertexArray(self.opaque_vao)
 
-        vertices = numpy.array(VERTICES, dtype=numpy.float32)
-        indices = numpy.array(INDICES, dtype=numpy.uint8)
-        uvs = numpy.array(UVS, dtype=numpy.float32)
+        self.vertices = numpy.array(VERTICES, dtype=numpy.float32)
+        self.indices = numpy.array(INDICES, dtype=numpy.uint8)
+        self.uvs = numpy.array(UVS, dtype=numpy.float32)
         textures = self.get_textures("opaque")
         positions = self.get_positions("opaque")
 
-        Buffer.use_buffer(vertices, gl.GL_ARRAY_BUFFER, location=0)
-        Buffer.use_buffer(uvs, gl.GL_ARRAY_BUFFER, location=1)
-        Buffer.use_buffer(indices, gl.GL_ELEMENT_ARRAY_BUFFER)
-        Buffer.use_buffer(textures, gl.GL_ARRAY_BUFFER, location=2, instancing=True)
-        Buffer.use_buffer(positions, gl.GL_ARRAY_BUFFER, location=4, instancing=True)
+        Buffer.use_buffer(self.vertex_buffer, self.vertices, gl.GL_ARRAY_BUFFER, location=0)
+        Buffer.use_buffer(self.uv_buffer, self.uvs, gl.GL_ARRAY_BUFFER, location=1)
+        Buffer.use_buffer(self.index_buffer, self.indices, gl.GL_ELEMENT_ARRAY_BUFFER)
+        Buffer.use_buffer(self.opaque_texture_buffer, textures, gl.GL_ARRAY_BUFFER, location=2, instancing=True)
+        Buffer.use_buffer(self.opaque_instance_buffer, positions, gl.GL_ARRAY_BUFFER, location=4, instancing=True)
 
     def set_transparent_positions(self, camera_position):
         gl.glBindVertexArray(self.transparent_vao)
 
         data = [(glm.vec3(key), value) for key, value in self.block_data["transparent"].items()]
-        data.sort(key=lambda x: glm.length2(camera_position - x[0]), reverse=True)
+        data.sort(key=lambda x: Math.length2(camera_position - x[0]), reverse=True)
 
         positions = numpy.array([value[0] for value in data], dtype=numpy.float32)
         textures = numpy.array([value[1] for value in data], dtype=numpy.float32)
 
-        # print(positions)
+        Buffer.use_buffer(self.vertex_buffer, self.vertices, gl.GL_ARRAY_BUFFER, location=0)
+        Buffer.use_buffer(self.uv_buffer, self.uvs, gl.GL_ARRAY_BUFFER, location=1)
+        Buffer.use_buffer(self.index_buffer, self.indices, gl.GL_ELEMENT_ARRAY_BUFFER)
 
-        vertices = numpy.array(VERTICES, dtype=numpy.float32)
-        indices = numpy.array(INDICES, dtype=numpy.uint8)
-        uvs = numpy.array(UVS, dtype=numpy.float32)
-
-        Buffer.use_buffer(vertices, gl.GL_ARRAY_BUFFER, location=0)
-        Buffer.use_buffer(uvs, gl.GL_ARRAY_BUFFER, location=1)
-        Buffer.use_buffer(indices, gl.GL_ELEMENT_ARRAY_BUFFER)
-
-        Buffer.use_buffer(textures, gl.GL_ARRAY_BUFFER, location=3, instancing=True)
-        Buffer.use_buffer(positions, gl.GL_ARRAY_BUFFER, location=5, instancing=True)
+        Buffer.use_buffer(self.transparent_texture_buffer, textures, gl.GL_ARRAY_BUFFER, location=3, instancing=True)
+        Buffer.use_buffer(self.transparent_instance_buffer, positions, gl.GL_ARRAY_BUFFER, location=5, instancing=True)
 
     def render(self, camera_position, shader_manager, alpha_id):
-        # self.set_buffers()
         is_transparent = alpha_id == "transparent"
         shader_manager.set_int1("mIsTransparent", int(is_transparent))
 
