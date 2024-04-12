@@ -1,4 +1,5 @@
 import numpy
+import OpenGL.GL as gl
 
 from src.world.chunk import Chunk
 
@@ -25,6 +26,9 @@ class World:
         if position not in self.chunks:
             self.chunks[position] = chunk
 
-    def render(self):
+    def render(self, camera_position, shader_manager):
         for chunk in self.chunks.values():
-            chunk.render()
+            chunk.render(camera_position, shader_manager, "opaque")
+
+        for chunk in self.chunks.values():
+            chunk.render(camera_position, shader_manager, "transparent")
