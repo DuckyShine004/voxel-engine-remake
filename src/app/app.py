@@ -31,6 +31,8 @@ class App:
         # gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
         gl.glEnable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_CULL_FACE)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
         self.shader_manager.use_program()
 
@@ -62,7 +64,9 @@ class App:
         gl.glClearColor(*BACKGROUND_COLOR)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-        self.world.render()
+        # self.world.render_test(self.camera.position, self.shader_manager)
+        self.world.render(self.camera.position, self.shader_manager, "opaque")
+        self.world.render(self.camera.position, self.shader_manager, "transparent")
 
     def on_key_press(self, window, key, scancode, action, mods):
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:

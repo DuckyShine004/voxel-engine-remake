@@ -1,9 +1,11 @@
 import random
 import numpy
+import glm
 import OpenGL.GL as gl
 
 from src.buffer.buffer import Buffer
 from src.buffer.texture import Texture
+from src.math.math import Math
 
 import src.utilities.noise as noise
 
@@ -21,14 +23,34 @@ from src.constants.world_constants import (
 
 class Chunk:
     def __init__(self, world, x, y, z):
-        self.vertex_array_object = gl.glGenVertexArrays(1)
+        self.opaque_vao = gl.glGenVertexArrays(1)
+        self.transparent_vao = gl.glGenVertexArrays(1)
+        self.vertex_buffer = gl.glGenBuffers(1)
+        self.index_buffer = gl.glGenBuffers(1)
+        self.element_buffer = gl.glGenBuffers(1)
+        self.uv_buffer = gl.glGenBuffers(1)
+        self.opaque_texture_buffer = gl.glGenBuffers(1)
+        self.transparent_texture_buffer = gl.glGenBuffers(1)
+        self.opaque_instance_buffer = gl.glGenBuffers(1)
+        self.transparent_instance_buffer = gl.glGenBuffers(1)
+
         self.world = world
 
         self.x = x
         self.y = y
         self.z = z
 
+        self.vertices = []
+        self.indices = []
+        self.uvs = []
+
         self.blocks = {}
+        self.block_data = {
+            "opaque": {},
+            "transparent": {},
+        }
+
+        Texture.use_textures()
 
     def create_chunk(self):
         for x in range(self.x, self.x + CHUNK_SIZE):
@@ -59,12 +81,12 @@ class Chunk:
                     if dx == dz == 0:
                         continue
 
-                    self.add_block(x + dx, y + dy, z + dz, "oak_leaves")
-                    self.add_block(x + dz, y + dy, z + dx, "oak_leaves")
+                    self.add_block(x + dx, y + dy, z + dz, "oak_leaves", "transparent")
+                    self.add_block(x + dz, y + dy, z + dx, "oak_leaves", "transparent")
 
         for dy in range(3, 5):
             for dx, dz in ((-1, 0), (1, 0), (0, 0), (0, 1), (0, -1)):
-                self.add_block(x + dx, y + dy, z + dz, "oak_leaves")
+                self.add_block(x + dx, y + dy, z + dz, "oak_leaves", "transparent")
 
     def add_cave(self, x, y, z):
         dirt_height = random.randint(*DIRT_HEIGHT_RANGE)
@@ -76,11 +98,13 @@ class Chunk:
             if noise.simplex_noise_3d(x, y - dy, z) >= 0.0:
                 self.add_block(x, y - dy, z, "stone")
 
-    def add_block(self, x, y, z, block_type="grass"):
+    def add_block(self, x, y, z, block_type="grass", alpha_id="opaque"):
         position = (x, y, z)
 
         if not self.check_block_position_occupied(position):
             self.blocks[position] = BLOCK_TYPES[block_type]
+
+        self.block_data[alpha_id][position] = BLOCK_TYPES[block_type]
 
     def check_block_position_occupied(self, position):
         for chunk in self.world.chunks.values():
@@ -89,30 +113,53 @@ class Chunk:
 
         return False
 
-    def get_block_positions(self):
-        return numpy.array(list(self.blocks.keys()), dtype=numpy.float32)
+    def get_positions(self, alpha_id):
+        return numpy.array(list(self.block_data[alpha_id].keys()), dtype=numpy.float32)
 
-    def get_block_textures(self):
-        return numpy.array(list(self.blocks.values()), dtype=numpy.float32)
+    def get_textures(self, alpha_id):
+        return numpy.array(list(self.block_data[alpha_id].values()), dtype=numpy.float32)
 
     def set_buffers(self):
-        gl.glBindVertexArray(self.vertex_array_object)
+        gl.glBindVertexArray(self.opaque_vao)
 
-        vertices = numpy.array(VERTICES, dtype=numpy.float32)
-        indices = numpy.array(INDICES, dtype=numpy.uint8)
-        uvs = numpy.array(UVS, dtype=numpy.float32)
-        block_textures = self.get_block_textures()
-        block_positions = self.get_block_positions()
+        self.vertices = numpy.array(VERTICES, dtype=numpy.float32)
+        self.indices = numpy.array(INDICES, dtype=numpy.uint8)
+        self.uvs = numpy.array(UVS, dtype=numpy.float32)
+        textures = self.get_textures("opaque")
+        positions = self.get_positions("opaque")
 
-        Texture.use_textures()
+        Buffer.use_buffer(self.vertex_buffer, self.vertices, gl.GL_ARRAY_BUFFER, location=0)
+        Buffer.use_buffer(self.uv_buffer, self.uvs, gl.GL_ARRAY_BUFFER, location=1)
+        Buffer.use_buffer(self.index_buffer, self.indices, gl.GL_ELEMENT_ARRAY_BUFFER)
+        Buffer.use_buffer(self.opaque_texture_buffer, textures, gl.GL_ARRAY_BUFFER, location=2, instancing=True)
+        Buffer.use_buffer(self.opaque_instance_buffer, positions, gl.GL_ARRAY_BUFFER, location=4, instancing=True)
 
-        Buffer.use_buffer(vertices, gl.GL_ARRAY_BUFFER, location=0)
-        Buffer.use_buffer(uvs, gl.GL_ARRAY_BUFFER, location=1)
-        Buffer.use_buffer(indices, gl.GL_ELEMENT_ARRAY_BUFFER)
-        Buffer.use_buffer(block_textures, gl.GL_ARRAY_BUFFER, location=2, instancing=True)
-        Buffer.use_buffer(block_positions, gl.GL_ARRAY_BUFFER, location=3, instancing=True)
+    def set_transparent_positions(self, camera_position):
+        gl.glBindVertexArray(self.transparent_vao)
 
-    def render(self):
-        gl.glBindVertexArray(self.vertex_array_object)
-        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, None, len(self.blocks.keys()))
+        data = [(glm.vec3(key), value) for key, value in self.block_data["transparent"].items()]
+        data.sort(key=lambda x: Math.length2(camera_position - x[0]), reverse=True)
+
+        positions = numpy.array([value[0] for value in data], dtype=numpy.float32)
+        textures = numpy.array([value[1] for value in data], dtype=numpy.float32)
+
+        Buffer.use_buffer(self.vertex_buffer, self.vertices, gl.GL_ARRAY_BUFFER, location=0)
+        Buffer.use_buffer(self.uv_buffer, self.uvs, gl.GL_ARRAY_BUFFER, location=1)
+        Buffer.use_buffer(self.index_buffer, self.indices, gl.GL_ELEMENT_ARRAY_BUFFER)
+
+        Buffer.use_buffer(self.transparent_texture_buffer, textures, gl.GL_ARRAY_BUFFER, location=3, instancing=True)
+        Buffer.use_buffer(self.transparent_instance_buffer, positions, gl.GL_ARRAY_BUFFER, location=5, instancing=True)
+
+    def render(self, camera_position, shader_manager, alpha_id):
+        is_transparent = alpha_id == "transparent"
+        shader_manager.set_int1("mIsTransparent", int(is_transparent))
+
+        if is_transparent:
+            self.set_transparent_positions(camera_position)
+
+        vao = self.transparent_vao if is_transparent else self.opaque_vao
+        size = len(self.block_data[alpha_id])
+
+        gl.glBindVertexArray(vao)
+        gl.glDrawElementsInstanced(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, None, size)
         gl.glBindVertexArray(0)
