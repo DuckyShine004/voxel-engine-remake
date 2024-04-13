@@ -64,7 +64,6 @@ class App:
         gl.glClearColor(*BACKGROUND_COLOR)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-        # self.world.render_test(self.camera.position, self.shader_manager)
         self.world.render(self.camera.position, self.shader_manager, "opaque")
         self.world.render(self.camera.position, self.shader_manager, "transparent")
 
