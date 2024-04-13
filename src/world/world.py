@@ -139,7 +139,7 @@ class World:
             self.block_data["all"][position] = self.block_data[alpha_type][position]
 
     def add_tree(self, x, y, z):
-        if y <= WATER_LEVEL or random.random() > TREE_CHANCE:
+        if not self.check_tree_valid(y):
             return
 
         tree_height = random.randint(*TREE_HEIGHT_RANGE)
@@ -181,6 +181,9 @@ class World:
         for dy in range(dirt_height, dirt_height + 10):
             if noise.simplex_noise_3d(x, y - dy, z) >= 0.0:
                 self.add_block(x, y - dy, z, "stone")
+
+    def check_tree_valid(self, y):
+        return y > WATER_LEVEL and random.random() <= TREE_CHANCE
 
     def render(self, camera_position, shader_manager, alpha_type):
         is_transparent = alpha_type == "transparent"
