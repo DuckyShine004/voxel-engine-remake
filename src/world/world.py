@@ -20,6 +20,7 @@ from src.constants.world_constants import (
     VERTICES,
     INDICES,
     UVS,
+    WATER_LEVEL,
     WORLD_WIDTH,
     WORLD_DEPTH,
 )
@@ -126,6 +127,7 @@ class World:
                 y = noise.simplex_noise_2d(x, z)
 
                 self.add_block(x, y, z)
+                self.add_water(x, y, z)
                 self.add_tree(x, y, z)
                 self.add_cave(x, y, z)
 
@@ -137,7 +139,7 @@ class World:
             self.block_data["all"][position] = self.block_data[alpha_type][position]
 
     def add_tree(self, x, y, z):
-        if random.random() > TREE_CHANCE:
+        if y <= WATER_LEVEL or random.random() > TREE_CHANCE:
             return
 
         tree_height = random.randint(*TREE_HEIGHT_RANGE)
@@ -160,6 +162,15 @@ class World:
         for dy in range(3, 5):
             for dx, dz in ((-1, 0), (1, 0), (0, 0), (0, 1), (0, -1)):
                 self.add_block(x + dx, y + dy, z + dz, "oak_leaves", "transparent")
+
+    def add_water(self, x, y, z):
+        if y > WATER_LEVEL:
+            return
+
+        water_height = WATER_LEVEL - y
+
+        for dy in range(1, water_height + 1):
+            self.add_block(x, y + dy, z, "water", "transparent")
 
     def add_cave(self, x, y, z):
         dirt_height = random.randint(*DIRT_HEIGHT_RANGE)

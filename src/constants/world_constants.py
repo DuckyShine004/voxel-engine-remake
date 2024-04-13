@@ -95,6 +95,7 @@ TEXTURE_HEIGHT = 48
 TREE_CHANCE = 0.005
 TREE_HEIGHT_RANGE = (5, 6)
 DIRT_HEIGHT_RANGE = (3, 4)
+WATER_LEVEL = 1
 
 BLOCK_TYPES = {
     "air": 0,
@@ -103,4 +104,5 @@ BLOCK_TYPES = {
     "dirt": 3,
     "oak_log": 4,
     "oak_leaves": 5,
+    "water": 6,
 }
